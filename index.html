@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>QOUR-OS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+</head>
+
+<body">
+
+<script>
+//DRAGGING MY BALLS
+function makeDraggable(element) {
+    const header = element.querySelector('.draggable-header');
+    let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
+
+    header.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+
+    function onMouseMove(e) {
+        e.preventDefault();
+        offsetX = mouseX - e.clientX;
+        offsetY = mouseY - e.clientY;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        element.style.top = (element.offsetTop - offsetY) + "px";
+        element.style.left = (element.offsetLeft - offsetX) + "px";
+    }
+
+    function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+}
+
+function initializeStartMenu() {
+    const startButton = document.getElementById('startButton');
+    const startMenu = document.getElementById('startMenu');
+
+    startButton.addEventListener('click', function () {
+        startMenu.classList.toggle('hidden');
+    });
+}
+
+function initializeCalendar() {
+    const calendar = document.getElementById('calendar');
+    const monthYear = document.getElementById('monthYear');
+    const calendarDays = document.getElementById('calendarDays');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const timeButton = document.getElementById('timeButton');
+
+    let currentDate = new Date();
+
+    function updateTime() {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        timeButton.textContent = now.toLocaleTimeString('en-US', options);
+    }
+
+    timeButton.addEventListener('click', function () {
+        calendar.classList.toggle('hidden');
+        renderCalendar(currentDate);
+    });
+
+    prevMonth.addEventListener('click', function () {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate);
+    });
+
+    nextMonth.addEventListener('click', function () {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate);
+    });
+
+    function renderCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        monthYear.textContent = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+        calendarDays.innerHTML = '';
+
+        for (let i = 0; i < firstDay; i++) {
+            calendarDays.innerHTML += '<div></div>';
+        }
+
+        for (let i = 1; i <= lastDate; i++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.textContent = i;
+            if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
+                dayDiv.classList.add('today');
+            }
+            calendarDays.appendChild(dayDiv);
+        }
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+}
+
+function initializeIframeWindow_games() {
+    const iframeWindow_games = document.getElementById('iframeWindow_games');
+    makeDraggable(iframeWindow_games);
+
+    const handleIframeWindow = function(action) {
+        const iframe = iframeWindow_games.querySelector('iframe');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                iframeWindow_games.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = 'https://d07riv.github.io/diabloweb/';
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_games.appendChild(newIframe);
+                } else {
+                    iframe.src = 'https://d07riv.github.io/diabloweb/';
+                }
+                iframeWindow_games.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_games');
+        }
+    };
+
+    const closeButton = iframeWindow_games.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleIframeWindow('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_games"]');
+    openButton.addEventListener('click', () => handleIframeWindow('open'));
+}
+function initialize_internet() {
+    const iframeWindow_internet = document.getElementById('iframeWindow_internet');
+    makeDraggable(iframeWindow_internet);
+
+    const handleIframeWindow_internet = function(action) {
+        const iframe = iframeWindow_internet.querySelector('iframe');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                iframeWindow_internet.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = 'https://eviltester.github.io/TestingApp/apps/iframe-search/iframe-search.html';
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_internet.appendChild(newIframe);
+                } else {
+                    iframe.src = 'https://eviltester.github.io/TestingApp/apps/iframe-search/iframe-search.html';
+                }
+                iframeWindow_internet.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_internet');
+        }
+    };
+
+    const closeButton = iframeWindow_internet.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleIframeWindow_internet('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_internet"]');
+    openButton.addEventListener('click', () => handleIframeWindow_internet('open'));
+}
+function intialize_blog() {
+    const iframeWindow_blog = document.getElementById('iframeWindow_blog');
+    makeDraggable(iframeWindow_blog);
+
+    const handleIframeWindow_blog = function(action) {
+        const iframe = iframeWindow_blog.querySelector('iframe');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                iframeWindow_blog.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = 'https://cuapapo.neocities.org';
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_blog.appendChild(newIframe);
+                } else {
+                    iframe.src = 'https://cuapapo.neocities.org';
+                }
+                iframeWindow_blog.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_blog');
+        }
+    };
+
+    const closeButton = iframeWindow_blog.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleIframeWindow_blog('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_blog"]');
+    openButton.addEventListener('click', () => handleIframeWindow_blog('open'));
+}
+function intialize_winamp() {
+    const iframeWindow_winamp = document.getElementById('iframeWindow_winamp');
+    makeDraggable(iframeWindow_winamp);
+
+    const handleIframeWindow_winamp = function(action) {
+        const iframe = iframeWindow_winamp.querySelector('iframe');
+        const audio = iframeWindow_winamp.querySelector('audio');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                if (audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+                iframeWindow_winamp.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = '';
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_winamp.appendChild(newIframe);
+                } else {
+                    iframe.src = '';
+                }
+                iframeWindow_winamp.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_winamp');
+        }
+    };
+
+    const closeButton = iframeWindow_winamp.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleIframeWindow_winamp('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_winamp"]');
+    openButton.addEventListener('click', () => handleIframeWindow_winamp('open'));
+}
+function initialize_computer() {
+    const iframeWindow_computer = document.getElementById('iframeWindow_computer');
+    
+    makeDraggable(iframeWindow_computer);
+
+    const handleComputerActions = function(action) {
+        const iframe = iframeWindow_computer.querySelector('iframe');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                iframeWindow_computer.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = '' 
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_computer.appendChild(newIframe);
+                } else {
+                    iframe.src = ''
+                }
+                iframeWindow_computer.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_computer');
+        }
+    };
+
+    const closeButton = iframeWindow_computer.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleComputerActions('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_computer"]');
+    openButton.addEventListener('click', () => handleComputerActions('open'));
+}
+
+
+function initialize_project() {
+    const iframeWindow_project = document.getElementById('iframeWindow_project');
+    
+    makeDraggable(iframeWindow_project);
+
+    const handleProjectActions = function(action) {
+        const iframe = iframeWindow_project.querySelector('iframe');
+
+        switch (action) {
+            case 'close':
+                if (iframe) {
+                    iframe.src = '';
+                }
+                iframeWindow_project.classList.add('hidden');
+                break;
+            case 'open':
+                if (!iframe) {
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = ''; 
+                    newIframe.width = '100%';
+                    newIframe.height = '100%';
+                    iframeWindow_project.appendChild(newIframe);
+                } else {
+                    iframe.src = ''; 
+                }
+                iframeWindow_project.classList.remove('hidden');
+                break;
+            default:
+                console.error('Invalid action for iframeWindow_project');
+        }
+    };
+
+    const closeButton = iframeWindow_project.querySelector('.close-button');
+    closeButton.addEventListener('click', () => handleProjectActions('close'));
+
+    const openButton = document.querySelector('button[onclick*="iframeWindow_project"]');
+    openButton.addEventListener('click', () => handleProjectActions('open'));
+}
+function audio_reader() {
+    var audioPreview = document.querySelector('audio');
+    var fileInput = document.querySelector('input[type="file"]');
+
+    fileInput.addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            
+            reader.addEventListener("load", function() {
+                audioPreview.src = reader.result;
+                audioPreview.play();
+            }, false);
+            
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    audio_reader();
+    initialize_computer();
+    initialize_project();
+    initializeIframeWindow_games();
+    initialize_internet();
+    initializeStartMenu();
+    initializeCalendar();
+    intialize_blog();
+    intialize_winamp();
+});
+
+</script>
+
+    <div class="container">
+        <div class="screen">
+            <div class="container_Desktop">
+                <div class="desktop_icons">
+                    <button class="icons" onclick="document.getElementById('iframeWindow_computer').classList.toggle('hidden')">
+                        <img class="icons" src="images/explorer.exe_14_100-4.png" alt="">
+                    </button>
+                    <div class="info">computer</div>
+                    <div class="draggable hidden" id="iframeWindow_computer">
+                        <div class="draggable-header">
+                            <span>[QOURPUTER]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <img src="images/UNDER_CONSTRUCTION.gif" alt="">
+                    </div>
+                </div>
+
+                <div class="desktop_icons">
+                    <button class="icons" onclick="document.getElementById('iframeWindow_games').classList.toggle('hidden')">
+                        <img class="icons" src="images/diablo1.png" alt="">
+                    </button>
+                    <div class="info">games</div>
+                    <div id="iframeWindow_games" class="draggable hidden">
+                        <div class="draggable-header">
+                            <span>[QOUR-GAMES]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <iframe src="https://d07riv.github.io/diabloweb/" allow="autoplay"
+                            width="100%" height="100%"></iframe>
+                    </div>
+                </div>
+
+                <div class="desktop_icons">
+                    <button class="icons" onclick="document.getElementById('iframeWindow_blog').classList.toggle('hidden')">
+                        <img class=" icons" src="images/moricons.dll_14_23-0.png" alt="">
+                    </button>
+                    <div class="info">blog</div>
+                    <div id = "iframeWindow_blog" class="draggable hidden">
+                        <div class="draggable-header">
+                            <span>[QOUR-BLOG]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <iframe src="https://cuapapo.neocities.org" frameborder="0" width="100%" height="100%"></iframe>
+                    </div>
+                </div>
+
+                <div class="desktop_icons">
+                    <button class="icons" onclick="document.getElementById('iframeWindow_project').classList.toggle('hidden')">
+                        <img class= "icons" src="images/devmgr.dll_14_201-0.png" alt="">
+                    </button>
+                    <div class="info">project</div>
+                    <div id="iframeWindow_project" class="draggable hidden">
+                        <div class="draggable-header">
+                            <span>[QOUR-PROJECT]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <img src="images/UNDER_CONSTRUCTION.gif" alt="">
+                    </div>
+                        
+                        
+                </div>
+
+                <div class="desktop_icons" id="internet">
+                    <button class="icons" onclick="document.getElementById('iframeWindow_internet').classList.toggle('hidden')">
+                        <img class="icons" src="images/shdoclc.dll_14_190-0.png" alt="">
+                    </button>
+                    <div class="info">internet</div>
+                    <div id="iframeWindow_internet" class="draggable hidden">
+                        <div class="draggable-header">
+                            <span>[QOUR-NET]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <iframe src="https://eviltester.github.io/TestingApp/apps/iframe-search/iframe-search.html" width="100%"
+                            height="100%"></iframe>
+                    </div>
+                </div>
+
+                <div class="desktop_icons">
+                    <button class="icons" id="app" onclick="document.getElementById('iframeWindow_winamp').classList.toggle('hidden')">
+                        <img class="icons" src="images/shell32.dll_14_299-3.png" alt="">
+                    </button>
+                    <div class="info">WINAMP</div>
+                    <div id="iframeWindow_winamp" class="draggable hidden">
+                        <div class="draggable-header">
+                            <span>[QOUR-MUSIC-PLAYER]</span>
+                            <span class="close-button">X</span>
+                        </div>
+                        <img src="images/QOUR-MUSIC-PLAYER.png" alt="mp3">
+                        <div class="container_mp3_play">
+                            <div class="mp3_milkdrop">
+                                <img src="images/MUSIC_GIF.gif" alt="">
+                            </div>
+                            <div class="mp3_controls">
+                                <input class="mp3_song_name" type="file" accept="audio/*">
+                            </div>
+                            <audio class="audio" controls></audio>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="taskbar">
+
+        <div class="taskbar_menu">
+            <button class="start-button" id="startButton">
+                <img src="images/w5gj2wkqhrc51.png" alt="tux">
+
+                Start</button>
+            <div id="startMenu" class="start-menu hidden">
+                <img class="me" src="images/me.jpg" alt="tux">
+                <div class="start-menu-content">
+                    <h2>Welcome to QOUR-OS</h2>
+                    <p>Let's Explore my personal-baggage and unprofessional projects.</p>
+                    <p></p>
+                    <ul>
+                        <li><a href="https://github.com/TUX-A1CUA0">GitHub</a></li>
+                        <li><a href="https://huggingface.co/artificial-human">Hugging-face</a></li>
+                        <li><a href="https://gitlab.com/AT0M_GIT">gitlab</a></li>
+                        <li><a href="https://mastodon.social/@AEX_256">Mastodon<a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="os_info">
+            <h2>QOUR-OS</h2>
+        </div>
+
+        <div class="time">
+            <button class="time_xp" id="timeButton"></button>
+            <div id="calendar" class="calendar hidden">
+                <div class="calendar-header">
+                    <button id="prevMonth">&lt;</button>
+                    <span id="monthYear"></span>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+                <div class="calendar-body">
+                    <div class="calendar-weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+</html>
